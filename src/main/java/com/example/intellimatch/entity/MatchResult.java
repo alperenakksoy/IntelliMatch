@@ -8,7 +8,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "match_results")
+@Table(name = "match_results", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"candidate_id", "job_posting_id"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
