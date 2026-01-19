@@ -41,7 +41,7 @@ public class Candidate extends BaseEntity {
     )
     private Set<Skill> skills = new HashSet<>();
 
-    @OneToOne(mappedBy = "candidate")
+    @OneToOne(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cv cv;
 
     @OneToMany(mappedBy = "candidate")
