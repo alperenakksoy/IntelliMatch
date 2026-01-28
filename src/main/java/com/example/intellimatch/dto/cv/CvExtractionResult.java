@@ -1,4 +1,4 @@
-package com.example.intellimatch.dto;
+package com.example.intellimatch.dto.cv;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.example.intellimatch.service;
 
-import com.example.intellimatch.dto.CvExtractionResult;
+import com.example.intellimatch.dto.cv.CvExtractionResult;
 import com.example.intellimatch.entity.Skill;
 import com.example.intellimatch.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +76,7 @@ public class CvParsingService {
         return skillRepository.findAll().stream()
                 .map(Skill::getName)
                 .filter(skill ->
-                        skillPattern(skill).matcher(text).find()
+                        skillPattern(skill).matcher(lowerCaseText).find()
                 )
                 .collect(Collectors.toSet());
     }
