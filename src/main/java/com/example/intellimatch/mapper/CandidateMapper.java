@@ -7,7 +7,7 @@ import com.example.intellimatch.entity.Candidate;
 public class CandidateMapper {
 
     public static Candidate toEntity(CandidateCreateRequest request) {
-        if(request == null) {
+        if (request == null) {
             return null;
         }
         return Candidate.builder()

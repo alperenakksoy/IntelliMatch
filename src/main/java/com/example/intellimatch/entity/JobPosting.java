@@ -29,8 +29,9 @@ public class JobPosting extends BaseEntity{
     @Column(nullable = false)
     private EducationLevel educationLevel;
 
+    @Builder.Default
     @Column(nullable = false)
-    private boolean active;
+    private boolean active = true;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
