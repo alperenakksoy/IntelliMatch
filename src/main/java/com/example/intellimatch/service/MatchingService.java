@@ -3,8 +3,6 @@ package com.example.intellimatch.service;
 import com.example.intellimatch.entity.Candidate;
 import com.example.intellimatch.entity.JobPosting;
 import com.example.intellimatch.entity.MatchResult;
-import com.example.intellimatch.entity.Skill;
-import com.example.intellimatch.enums.EducationLevel;
 import com.example.intellimatch.repository.CandidateRepository;
 import com.example.intellimatch.repository.JobPostingRepository;
 import com.example.intellimatch.repository.MatchResultRepository;
@@ -16,8 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor

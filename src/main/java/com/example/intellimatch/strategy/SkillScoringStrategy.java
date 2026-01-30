@@ -2,7 +2,6 @@ package com.example.intellimatch.strategy;
 
 import com.example.intellimatch.entity.Candidate;
 import com.example.intellimatch.entity.JobPosting;
-import com.example.intellimatch.entity.MatchResult;
 import com.example.intellimatch.entity.Skill;
 import org.springframework.stereotype.Component;
 

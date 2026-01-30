@@ -3,7 +3,6 @@ package com.example.intellimatch.strategy;
 import com.example.intellimatch.entity.Candidate;
 import com.example.intellimatch.entity.JobPosting;
 import com.example.intellimatch.enums.EducationLevel;
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import org.springframework.stereotype.Component;
 
 @Component
