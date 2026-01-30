@@ -45,8 +45,8 @@ public class MatchingService {
         }
 
         double skillScore = skillScoringStrategy.calculateScore(candidate, jobPosting);
-        double experienceScore = educationScoringStrategy.calculateScore(candidate, jobPosting);
-        double educationScore = experienceScoringStrategy.calculateScore(candidate, jobPosting);
+        double experienceScore = experienceScoringStrategy.calculateScore(candidate, jobPosting);experienceScoringStrategy
+        double educationScore = educationScoringStrategy.calculateScore(candidate, jobPosting);
 
         double finalScore = (skillScore * 0.5) + (experienceScore * 0.3) + (educationScore * 0.2);
 
