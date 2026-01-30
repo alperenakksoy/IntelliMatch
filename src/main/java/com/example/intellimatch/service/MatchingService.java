@@ -8,6 +8,9 @@ import com.example.intellimatch.enums.EducationLevel;
 import com.example.intellimatch.repository.CandidateRepository;
 import com.example.intellimatch.repository.JobPostingRepository;
 import com.example.intellimatch.repository.MatchResultRepository;
+import com.example.intellimatch.strategy.EducationScoringStrategy;
+import com.example.intellimatch.strategy.ExperienceScoringStrategy;
+import com.example.intellimatch.strategy.SkillScoringStrategy;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,10 @@ public class MatchingService {
     private final CandidateRepository candidateRepository;
     private final JobPostingRepository jobPostingRepository;
     private final MatchResultRepository matchResultRepository;
+
+    private final SkillScoringStrategy skillScoringStrategy;
+    private final EducationScoringStrategy educationScoringStrategy;
+    private final ExperienceScoringStrategy experienceScoringStrategy;
 
     @Transactional
     public MatchResult matchCandidateToJob(Long candidateId, Long JobId) {
@@ -40,9 +47,9 @@ public class MatchingService {
             return existingMatch.get();
         }
 
-        double skillScore = calculateSkillScore(candidate, jobPosting);
-        double experienceScore = calculateExperienceScore(candidate, jobPosting);
-        double educationScore = calculateEducationScore(candidate, jobPosting);
+        double skillScore = skillScoringStrategy.calculateScore(candidate, jobPosting);
+        double experienceScore = educationScoringStrategy.calculateScore(candidate, jobPosting);
+        double educationScore = experienceScoringStrategy.calculateScore(candidate, jobPosting);
 
         double finalScore = (skillScore * 0.5) + (experienceScore * 0.3) + (educationScore * 0.2);
 
@@ -58,57 +65,4 @@ public class MatchingService {
         return matchResultRepository.save(matchResult);
 
     }
-
-    private double calculateSkillScore(Candidate candidate, JobPosting job) {
-
-        Set<String> requiredSkills = job.getRequiredSkills().stream()
-                .map(Skill::getName)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
-
-        if(requiredSkills.isEmpty()) {
-            return 100.0;
-        }
-
-        Set<String> candidateSkills = candidate.getSkills().stream()
-                .map(Skill::getName)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
-
-        long matchCount = requiredSkills.stream()
-                .filter(candidateSkills::contains)
-                .count();
-
-        return ((double) matchCount) / requiredSkills.size() * 100;
-    }
-
-    private double calculateExperienceScore(Candidate candidate, JobPosting job) {
-        int minExp = job.getMinYearsOfExperience();
-        int candidateExp = candidate.getYearsOfExperience();
-
-        if(minExp == 0) {
-            return 100.0;
-        }
-
-        if(candidateExp >= minExp) {
-            int extraYears = candidateExp - minExp;
-            double bonus = extraYears * 5.0;
-            return Math.min(100.0 + bonus, 120.0);
-        } else {
-            return ((double) candidateExp / minExp) * 100.0;
-        }
-    }
-
-    private double calculateEducationScore(Candidate candidate, JobPosting job) {
-        EducationLevel candidateLvl = candidate.getEducationLevel();
-        EducationLevel jobLvl = job.getEducationLevel();
-
-        if(candidateLvl.ordinal() >= jobLvl.ordinal()) {
-            return 100.0;
-        } else{
-            return 50.0;
-        }
-    }
-
-
 }
