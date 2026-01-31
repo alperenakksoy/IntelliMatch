@@ -1,19 +1,23 @@
 package com.example.intellimatch.service;
 
+import com.example.intellimatch.dto.matchResult.MatchResultResponse;
 import com.example.intellimatch.entity.Candidate;
 import com.example.intellimatch.entity.JobPosting;
 import com.example.intellimatch.entity.MatchResult;
+import com.example.intellimatch.mapper.MatchResultMapper;
 import com.example.intellimatch.repository.CandidateRepository;
 import com.example.intellimatch.repository.JobPostingRepository;
 import com.example.intellimatch.repository.MatchResultRepository;
 import com.example.intellimatch.strategy.EducationScoringStrategy;
 import com.example.intellimatch.strategy.ExperienceScoringStrategy;
 import com.example.intellimatch.strategy.SkillScoringStrategy;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -60,6 +64,23 @@ public class MatchingService {
                 .build();
 
         return matchResultRepository.save(matchResult);
+    }
+
+    @Transactional
+    public List<MatchResultResponse> rankCandidatesToJob(Long jobId) {
+
+        if(!jobPostingRepository.existsById(jobId)) {
+            throw new RuntimeException("Job posting not found: " + jobId);
+        }
+
+        List<Candidate> allCandidates = candidateRepository.findAll();
+
+        allCandidates.forEach(candidate -> matchCandidateToJob(candidate.getId(), jobId));
+
+        return matchResultRepository.findByJobPostingIdOrderByFinalScoreDesc(jobId).stream()
+                .map(MatchResultMapper::toResponse)
+                .collect(Collectors.toList());
+
 
     }
 }
