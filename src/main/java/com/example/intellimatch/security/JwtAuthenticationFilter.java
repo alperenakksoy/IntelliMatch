@@ -1,5 +1,6 @@
 package com.example.intellimatch.security;
 
+import com.example.intellimatch.repository.RevokedTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
+    private final RevokedTokenRepository revokedTokenRepository; // Inject
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -32,7 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
 
-            if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
+            if (jwt != null && jwtTokenProvider.validateToken(jwt) && !revokedTokenRepository.existsByToken(jwt)) {
+
                 String email = jwtTokenProvider.getEmailFromToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
@@ -42,9 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             log.error("Authentication failed.", e);
