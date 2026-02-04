@@ -28,7 +28,7 @@ public class CandidateService {
     @Transactional
     public CandidateResponse createCandidate(CandidateCreateRequest request) {
         if (candidateRepository.existsByEmail(request.getCandidateEmail())) {
-            throw new RuntimeException("Email already registered");
+            throw new IllegalArgumentException("Email already registered");
         }
         Candidate candidate = CandidateMapper.toEntity(request);
 
