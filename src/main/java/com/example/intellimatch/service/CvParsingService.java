@@ -23,7 +23,7 @@ public class CvParsingService {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}");
     private static final Pattern PHONE_PATTERN = Pattern.compile("(\\+\\d{1,3}[- ]?)?\\d{10}");
-
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     public CvExtractionResult extractCv(MultipartFile file) {
 
@@ -31,6 +31,10 @@ public class CvParsingService {
 
         if(fileName == null || !fileName.endsWith(".pdf")) {
             throw new RuntimeException("Only pdf files are supported");
+        }
+
+        if(file.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException("File size exceeds maximum limit of 5 MB");
         }
 
         String text;

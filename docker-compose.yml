@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Senin Spring Boot Uygulaman
+  app:
+    container_name: intellimatch-backend
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/intellimatch_db?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - intellimatch-net
+    restart: always
+
+  db:
+    image: mysql:8.0
+    container_name: intellimatch-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=intellimatch_db
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - intellimatch-net
+    command: --default-authentication-plugin=mysql_native_password
+
+networks:
+  intellimatch-net:
+    driver: bridge
+
+volumes:
+  db_data:
