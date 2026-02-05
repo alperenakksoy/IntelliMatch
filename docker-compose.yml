@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Senin Spring Boot Uygulaman
   app:
     container_name: intellimatch-backend
     build: .
